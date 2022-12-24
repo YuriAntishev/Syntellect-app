@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Button from "./components/controlWithButtons";
+import Control from "./components/Control";
 import ControlViewModel from "./viewmodels/ControlViewModel";
+import { AppWrapper } from "./styles/styles";
 
 function App() {
   const [inputValues, setInputValues] = useState<any>({});
@@ -67,20 +68,49 @@ function App() {
     setInputValues,
   };
 
+  const dataForButton4 = {
+    typeOfInput: "search",
+    nameOfInput: "control4",
+    inputValues,
+    setInputValues,
+  };
+
   let buttonViewModel1 = new ControlViewModel(dataForButton1),
     buttonViewModel2 = new ControlViewModel(dataForButton2),
-    buttonViewModel3 = new ControlViewModel(dataForButton3);
+    buttonViewModel3 = new ControlViewModel(dataForButton3),
+    buttonViewModel4 = new ControlViewModel(dataForButton4);
 
   return (
-    <>
-      <h4>Control with Buttons</h4>
-      <Button viewModel={buttonViewModel1} />
-      <br />
-      <br />
-      <Button viewModel={buttonViewModel2} />
-      <h4>Control Autocomplete</h4>
-      <Button viewModel={buttonViewModel3} />
-    </>
+    <AppWrapper>
+      <div>
+        <h4
+          style={{
+            color: "rgb(150 81 255)",
+          }}
+        >
+          Control with Buttons
+        </h4>
+        <Control viewModel={buttonViewModel1} />
+        <br />
+        <Control viewModel={buttonViewModel2} />
+        <h4
+          style={{
+            color: "rgb(150 81 255)",
+          }}
+        >
+          Control Autocomplete 1
+        </h4>
+        <Control viewModel={buttonViewModel3} />
+        <h4
+          style={{
+            color: "rgb(150 81 255)",
+          }}
+        >
+          Control Autocomplete 2
+        </h4>
+        <Control viewModel={buttonViewModel4} />
+      </div>
+    </AppWrapper>
   );
 }
 

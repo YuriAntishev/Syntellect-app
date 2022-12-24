@@ -1,6 +1,5 @@
 import { makeObservable, observable } from "mobx";
 import PromiseAwareViewModelBase from "./PromiseAwareViewModelBase";
-// import TodoService from '../services/TodoService';
 import Control from "../models/Control";
 import { getCountries } from "../api/apiService";
 
@@ -17,23 +16,11 @@ export default class ButtonViewModel extends PromiseAwareViewModelBase {
   ) {
     super();
     makeObservable(this);
-    this.typeOfInput = model.typeOfInput;
-    this.nameOfInput = model.nameOfInput;
-    this.inputValues = model.inputValues;
-    this.setInputValues = model.setInputValues;
-    this.rightButtons = model.rightButtons;
-    this.leftButtons = model.leftButtons;
+    this.model = model
   }
 
   //#region properties
-
-  public id: number = 0;
-  public inputValues: any;
-  public nameOfInput: string;
-  public typeOfInput: string;
-  public rightButtons?: any;
-  public leftButtons?: any;
-  public setInputValues: any;
+  public model: Control;
 
   @observable
   public countries: Array<any> = [];

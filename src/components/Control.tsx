@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { observer } from "mobx-react";
-import { Input } from "./Input";
-// import TodoListViewModel from '../viewmodels/TodoListViewModel';
-// import TodoItem from './TodoItem';
+import { Input } from "./Input/Input";
+import ControlViewModel from "../viewmodels/ControlViewModel";
+import { ControlWrapper, StyledButton } from "../styles/styles";
 
-// type TodoListProps = {
-//     viewModel: TodoListViewModel
-// }
+type ControlProps = {
+  viewModel: ControlViewModel;
+};
 
-export default observer(({ viewModel }: any) => {
+export default observer(({ viewModel }: ControlProps) => {
   const {
     typeOfInput,
     nameOfInput,
@@ -16,7 +16,7 @@ export default observer(({ viewModel }: any) => {
     setInputValues,
     rightButtons,
     leftButtons,
-  } = viewModel;
+  } = viewModel.model;
 
   const onInputChanged = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -38,12 +38,12 @@ export default observer(({ viewModel }: any) => {
   console.log("countries", viewModel);
 
   return (
-    <>
+    <ControlWrapper>
       {leftButtons?.map(({ id, name, onClick }: any) => {
         return (
-          <button key={id} onClick={onClick}>
+          <StyledButton key={id} onClick={onClick}>
             {name}
-          </button>
+          </StyledButton>
         );
       })}
       <Input
@@ -55,11 +55,11 @@ export default observer(({ viewModel }: any) => {
       />
       {rightButtons?.map(({ id, name, onClick }: any) => {
         return (
-          <button key={id} onClick={onClick}>
+          <StyledButton key={id} onClick={onClick}>
             {name}
-          </button>
+          </StyledButton>
         );
       })}
-    </>
+    </ControlWrapper>
   );
 });
