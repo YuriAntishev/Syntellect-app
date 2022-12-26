@@ -27,11 +27,3 @@ export function getCountryByName(countryName: string): Promise<CountryInfo[]> {
 function getRandom(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-export function getCountries() {
-  return new Promise((resolve) => {
-    setTimeout(resolve, getRandom(100, 800));
-  }).then(() => {
-    return countries;
-  });
-}

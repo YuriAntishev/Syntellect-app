@@ -6,7 +6,8 @@ interface Props<T> {
   results?: T[];
   renderItem(item: T): JSX.Element;
   focusedIndex: number;
-  tips: any;
+  maxTips: number;
+  tips: number;
   setTips: any;
   resultContainer: RefObject<HTMLDivElement>;
   handleSelection: (selectedIndex: number) => void;
@@ -15,6 +16,7 @@ interface Props<T> {
 const SearchResults = <T extends object>({
   results,
   renderItem,
+  maxTips,
   tips,
   setTips,
   focusedIndex,
@@ -29,13 +31,9 @@ const SearchResults = <T extends object>({
       setCurrentData(JSON.stringify(results));
       setTips((prev: any) => prev + 1);
     }
-  }, [JSON.stringify(results)]);
+  }, [results]);
 
-  console.log("currentData777", currentData);
-  console.log("results777", results);
-  console.log("cond1", currentData !== JSON.stringify(results));
-
-  if (tips > 10) {
+  if (tips > maxTips) {
     return <div></div>;
   }
   return (

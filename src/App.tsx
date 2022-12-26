@@ -3,6 +3,10 @@ import Control from "./components/Control";
 import ControlViewModel from "./viewmodels/ControlViewModel";
 import { AppWrapper } from "./styles/styles";
 
+type Input = { 
+  [key: string]: string 
+};
+
 function App() {
   const [inputValues, setInputValues] = useState<any>({});
 
@@ -64,6 +68,7 @@ function App() {
   const dataForButton3 = {
     typeOfInput: "search",
     nameOfInput: "control3",
+    maxTips: 3,
     inputValues,
     setInputValues,
   };
@@ -71,6 +76,7 @@ function App() {
   const dataForButton4 = {
     typeOfInput: "search",
     nameOfInput: "control4",
+    maxTips: 10,
     inputValues,
     setInputValues,
   };

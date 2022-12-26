@@ -1,27 +1,33 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import SearchResults from "./SearchResults";
+import ControlViewModel from "../../viewmodels/ControlViewModel";
 import { StyledInput } from "../../styles/styles";
+import { Country } from "../../components/Input/Input";
 
-interface Props<T> {
-  results?: T[];
-  renderItem(item: T): JSX.Element;
-  onChange?: React.ChangeEventHandler;
-  onSelect?: (item: T) => void;
+interface Props {
+  renderItem(item: Country): JSX.Element;
+  onSelect?: (item: Country) => void;
+  model: ControlViewModel;
+  maxTips: number;
+  setSelectedProfile: any;
   value?: string;
 }
 
-const LiveSearch = <T extends object>({
-  results = [],
+const LiveSearch = ({
   renderItem,
+  model,
+  maxTips,
   value,
-  onChange,
   onSelect,
-}: Props<T>): JSX.Element => {
+  setSelectedProfile,
+}: Props): JSX.Element => {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const resultContainer = useRef<HTMLDivElement>(null);
   const [showResults, setShowResults] = useState(false);
   const [defaultValue, setDefaultValue] = useState("");
   const [tips, setTips] = useState(0);
+
+  const [results, setResults] = useState<Country[]>([]);
 
   const renderCounter = useRef(0);
   renderCounter.current = renderCounter.current + 1;
@@ -42,20 +48,20 @@ const LiveSearch = <T extends object>({
     const { key } = e;
     let nextIndexCount = 0;
 
-    // move down
     if (key === "ArrowDown")
       nextIndexCount = (focusedIndex + 1) % results.length;
 
-    // move up
     if (key === "ArrowUp")
       nextIndexCount = (focusedIndex + results.length - 1) % results.length;
 
-    // hide search results
+    if (key === "Backspace" || key === "Delete") {
+      setSelectedProfile();
+    }
+
     if (key === "Escape") {
       resetSearchComplete();
     }
 
-    // select the current item
     if (key === "Enter") {
       e.preventDefault();
       handleSelection(focusedIndex);
@@ -67,8 +73,24 @@ const LiveSearch = <T extends object>({
   type changeHandler = React.ChangeEventHandler<HTMLInputElement>;
   const handleChange: changeHandler = (e) => {
     setDefaultValue(e.target.value);
-    onChange && onChange(e);
   };
+
+  useEffect(() => {
+    if (!value) {
+      model.fetchCountries(defaultValue);
+    }
+  }, [defaultValue]);
+
+  useEffect(() => {
+    if (defaultValue !== "") {
+      setResults(model.countries);
+    }
+  }, [model.countries, defaultValue]);
+
+  console.log("defaultValue", defaultValue);
+  console.log("countries555", model.countries);
+  console.log("results", results);
+  console.log("showResults", showResults);
 
   useEffect(() => {
     if (!resultContainer.current) return;
@@ -82,6 +104,8 @@ const LiveSearch = <T extends object>({
     if (results.length > 0 && !showResults) setShowResults(true);
 
     if (results.length <= 0) setShowResults(false);
+
+    // if (!value) setShowResults(false);
   }, [results]);
 
   useEffect(() => {
@@ -110,7 +134,7 @@ const LiveSearch = <T extends object>({
             marginBottom: "10px",
           }}
         >
-          Maximum Tips {tips}
+          Maximum Tips {maxTips}
         </div>
         <StyledInput
           type="text"
@@ -122,6 +146,7 @@ const LiveSearch = <T extends object>({
           <SearchResults
             results={results}
             tips={tips}
+            maxTips={maxTips}
             setTips={setTips}
             renderItem={renderItem}
             focusedIndex={focusedIndex}

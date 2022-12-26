@@ -1,7 +1,7 @@
-import { makeObservable, observable } from "mobx";
+import { makeObservable, toJS, observable } from "mobx";
 import PromiseAwareViewModelBase from "./PromiseAwareViewModelBase";
 import Control from "../models/Control";
-import { getCountries } from "../api/apiService";
+import { getCountryByName } from "../api/apiService";
 
 interface ServerResponseInterface<T> {
   didFail: boolean;
@@ -11,7 +11,6 @@ interface ServerResponseInterface<T> {
 
 export default class ButtonViewModel extends PromiseAwareViewModelBase {
   constructor(
-    // private service: TodoService,
     model: Control
   ) {
     super();
@@ -22,16 +21,16 @@ export default class ButtonViewModel extends PromiseAwareViewModelBase {
   //#region properties
   public model: Control;
 
-  @observable
+  @observable.ref
   public countries: Array<any> = [];
 
   //#endregion
 
   //#region methods
 
-  public async getAllCountries(): Promise<ServerResponseInterface<Array<any>>> {
+  public async getAllCountries(countryName: string): Promise<ServerResponseInterface<Array<any>>> {
     try {
-      let response = await getCountries();
+      let response = await getCountryByName(countryName);
 
         // if (!response.ok) {
         //   return { didFail: true, failReason: response.statusText };
@@ -43,15 +42,15 @@ export default class ButtonViewModel extends PromiseAwareViewModelBase {
     }
   }
 
-  public async fetchCountries() {
+  public async fetchCountries(countryName: string) {
     await this.runWithAwareness(async () => {
-      var response = await this.getAllCountries();
+      let response = await this.getAllCountries(countryName);
 
       if (response.didFail) {
         this.didRequestFail = true;
         this.failReason = response.failReason;
       } else {
-        this.countries = response.data as Array<any>;
+          this.countries = toJS(response.data) as Array<any>;
       }
     });
   }

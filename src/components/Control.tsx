@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { observer } from "mobx-react";
 import { Input } from "./Input/Input";
 import ControlViewModel from "../viewmodels/ControlViewModel";
@@ -12,6 +12,7 @@ export default observer(({ viewModel }: ControlProps) => {
   const {
     typeOfInput,
     nameOfInput,
+    maxTips,
     inputValues,
     setInputValues,
     rightButtons,
@@ -31,35 +32,50 @@ export default observer(({ viewModel }: ControlProps) => {
     [setInputValues]
   );
 
-  useEffect(() => {
-    viewModel.fetchCountries();
-  }, []);
-
-  console.log("countries", viewModel);
-
   return (
     <ControlWrapper>
-      {leftButtons?.map(({ id, name, onClick }: any) => {
-        return (
-          <StyledButton key={id} onClick={onClick}>
-            {name}
-          </StyledButton>
-        );
-      })}
+      {leftButtons?.map(
+        ({
+          id,
+          name,
+          onClick,
+        }: {
+          id: number;
+          name: string;
+          onClick: () => void;
+        }) => {
+          return (
+            <StyledButton key={id} onClick={onClick}>
+              {name}
+            </StyledButton>
+          );
+        }
+      )}
       <Input
         type={typeOfInput}
         name={`${nameOfInput}`}
         value={inputValues[nameOfInput]}
-        data={viewModel.countries}
+        maxTips={maxTips}
+        model={viewModel}
         onChange={onInputChanged}
       />
-      {rightButtons?.map(({ id, name, onClick }: any) => {
-        return (
-          <StyledButton key={id} onClick={onClick}>
-            {name}
-          </StyledButton>
-        );
-      })}
+      {rightButtons?.map(
+        ({
+          id,
+          name,
+          onClick,
+        }: {
+          id: number;
+          name: string;
+          onClick: () => void;
+        }) => {
+          return (
+            <StyledButton key={id} onClick={onClick}>
+              {name}
+            </StyledButton>
+          );
+        }
+      )}
     </ControlWrapper>
   );
 });
