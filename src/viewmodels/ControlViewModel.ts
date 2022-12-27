@@ -1,59 +1,24 @@
-import { makeObservable, toJS, observable } from "mobx";
-import PromiseAwareViewModelBase from "./PromiseAwareViewModelBase";
+import { makeAutoObservable, observable, runInAction, configure } from "mobx";
 import Control from "../models/Control";
 import { getCountryByName } from "../api/apiService";
 
-interface ServerResponseInterface<T> {
-  didFail: boolean;
-  failReason?: string;
-  data?: T;
-}
-
-export default class ButtonViewModel extends PromiseAwareViewModelBase {
-  constructor(
-    model: Control
-  ) {
-    super();
-    makeObservable(this);
-    this.model = model
+configure({ enforceActions: "always" });
+export default class ButtonViewModel {
+  constructor(model: Control) {
+    makeAutoObservable(this);
+    this.model = model;
   }
 
-  //#region properties
-  public model: Control;
+  model: Control;
 
   @observable.ref
-  public countries: Array<any> = [];
+  countries: Array<any> = [];
 
-  //#endregion
+  loadCountryByName = async (countryName: string) => {
+    const response = await getCountryByName(countryName);
 
-  //#region methods
-
-  public async getAllCountries(countryName: string): Promise<ServerResponseInterface<Array<any>>> {
-    try {
-      let response = await getCountryByName(countryName);
-
-        // if (!response.ok) {
-        //   return { didFail: true, failReason: response.statusText };
-        // }
-
-      return { didFail: false, data: response };
-    } catch (e) {
-      return { didFail: false, failReason: String(e) };
-    }
-  }
-
-  public async fetchCountries(countryName: string) {
-    await this.runWithAwareness(async () => {
-      let response = await this.getAllCountries(countryName);
-
-      if (response.didFail) {
-        this.didRequestFail = true;
-        this.failReason = response.failReason;
-      } else {
-          this.countries = toJS(response.data) as Array<any>;
-      }
+    runInAction(() => {
+      this.countries = response;
     });
-  }
-
-  //#endregion
+  };
 }

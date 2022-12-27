@@ -77,7 +77,7 @@ const LiveSearch = ({
 
   useEffect(() => {
     if (!value) {
-      model.fetchCountries(defaultValue);
+      model.loadCountryByName(defaultValue);
     }
   }, [defaultValue]);
 

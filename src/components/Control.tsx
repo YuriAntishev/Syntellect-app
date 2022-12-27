@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { observer } from "mobx-react";
 import { Input } from "./Input/Input";
 import ControlViewModel from "../viewmodels/ControlViewModel";
@@ -19,18 +19,15 @@ export default observer(({ viewModel }: ControlProps) => {
     leftButtons,
   } = viewModel.model;
 
-  const onInputChanged = useCallback(
-    (e: React.FormEvent<HTMLInputElement>) => {
-      const { value, name } = e.currentTarget;
-      setInputValues((prevState: any) => {
-        return {
-          ...prevState,
-          [name]: value,
-        };
-      });
-    },
-    [setInputValues]
-  );
+  const onInputChanged = (e: React.FormEvent<HTMLInputElement>) => {
+    const { value, name } = e.currentTarget;
+    setInputValues((prevState: any) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
 
   return (
     <ControlWrapper>
